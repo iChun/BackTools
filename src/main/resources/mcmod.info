@@ -1,0 +1,21 @@
+[
+{
+  "modid" : "backtools",
+  "name" : "BackTools",
+  "version" : "${version}",
+  "url" : "http://ichun.me/mods/back-tools/",
+  "credits" : "",
+  "authorList": [
+    "iChun"
+  ],
+  "description": "Shows the last used tool on the player's back. Purely aesthetic.",
+  "logoFile" : "",
+  "updateUrl" : "",
+  "parent" : "",
+  "screenshots": [
+  ],
+  "dependencies": [
+    "Forge", "iChunUtil"
+  ]
+}
+]
