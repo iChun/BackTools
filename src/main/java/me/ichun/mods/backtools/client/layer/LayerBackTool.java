@@ -24,7 +24,7 @@ public class LayerBackTool implements LayerRenderer<EntityPlayer>
     //func_177093_a(entity, f8, f7, partialTicks, f5, f4, f9, 0.0625F);
     public void doRenderLayer(EntityPlayer player, float f, float f1, float renderTick, float f2, float f3, float f4, float f5)
     {
-        if(iChunUtil.hasMorphMod() && MorphApi.getApiImpl().hasMorph(player.getName(), Side.CLIENT) && (MorphApi.getApiImpl().morphProgress(player.getName(), Side.CLIENT) < 1.0F || !(MorphApi.getApiImpl().getMorphEntity(player.worldObj, player.getName(), Side.CLIENT) instanceof EntityPlayer)))
+        if(iChunUtil.hasMorphMod() && MorphApi.getApiImpl().hasMorph(player.getName(), Side.CLIENT) && (MorphApi.getApiImpl().morphProgress(player.getName(), Side.CLIENT) < 1.0F || !(MorphApi.getApiImpl().getMorphEntity(player.getEntityWorld(), player.getName(), Side.CLIENT) instanceof EntityPlayer)))
         {
             return;
         }
@@ -33,20 +33,20 @@ public class LayerBackTool implements LayerRenderer<EntityPlayer>
             ItemStack is = BackTools.eventHandlerClient.playerTool.get(player.getName());
 
             ItemStack heldItem = player.getHeldItem(EnumHand.MAIN_HAND);
-            if(heldItem != null)
+            if(!heldItem.isEmpty())
             {
                 ItemStack is1 = heldItem.copy();
                 is1.setItemDamage(0);
                 heldItem = is1;
             }
 
-            if(is != null && !ItemStack.areItemStacksEqual(is, heldItem))
+            if(is != null && !is.isEmpty() && !ItemStack.areItemStacksEqual(is, heldItem))
             {
                 GlStateManager.pushMatrix();
 
                 GlStateManager.translate(0.0f, 0.35F, 0.16F);
 
-                if(player.inventory.armorItemInSlot(2) != null)
+                if(!player.inventory.armorItemInSlot(2).isEmpty())
                 {
                     GlStateManager.translate(0.0F, player.isSneaking() ? -0.1F : 0.0F, player.isSneaking() ? 0.025F : 0.06F);
                 }

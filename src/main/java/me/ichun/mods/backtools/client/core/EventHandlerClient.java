@@ -43,7 +43,7 @@ public class EventHandlerClient
             EntityPlayer player = event.player;
 
             ItemStack heldItem = player.getHeldItem(EnumHand.MAIN_HAND);
-            if(heldItem != currentTool.get(player.getName()) && (heldItem != null && (Block.getBlockFromItem(heldItem.getItem()) != Blocks.AIR) || heldItem == null))
+            if(heldItem != currentTool.get(player.getName()) && (heldItem.isEmpty() || (Block.getBlockFromItem(heldItem.getItem()) == Blocks.AIR)))
             {
                 if(currentTool.get(player.getName()) != null && (currentTool.get(player.getName()).getItem().isFull3D() || currentTool.get(player.getName()).getItem() instanceof ItemBow) && !BackTools.blacklist.contains(currentTool.get(player.getName()).getItem()))
                 {
@@ -53,8 +53,7 @@ public class EventHandlerClient
                     {
                         is.setItemDamage(0);
                         ItemStack prevTool = playerTool.get(player.getName());
-                        boolean equal = ItemStack.areItemStacksEqual(prevTool, is);
-                        if(prevTool == null || !equal)
+                        if(prevTool == null || (prevTool.isEmpty() || !ItemStack.areItemStacksEqual(prevTool, is)))
                         {
                             playerTool.put(player.getName(), is);
                         }
@@ -74,7 +73,7 @@ public class EventHandlerClient
             while(ite.hasNext())
             {
                 Map.Entry<String, ItemStack> e = ite.next();
-                if(e.getValue().isItemEqual(((EntityItem)event.getEntity()).getEntityItem()))
+                if(e.getValue().isItemEqual(((EntityItem)event.getEntity()).getItem()))
                 {
                     List<Entity> list = event.getWorld().getEntitiesInAABBexcluding(event.getEntity(), event.getEntity().getEntityBoundingBox(), Predicates.instanceOf(EntityPlayer.class));
                     boolean flag = false;

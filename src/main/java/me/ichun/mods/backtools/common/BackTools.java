@@ -21,14 +21,15 @@ import java.util.HashSet;
 @Mod(modid = BackTools.MOD_ID, name = BackTools.MOD_NAME,
         version = BackTools.VERSION,
         guiFactory = "me.ichun.mods.ichunutil.common.core.config.GenericModGuiFactory",
-        dependencies = "required-after:ichunutil@[" + iChunUtil.VERSION_MAJOR +".2.0," + (iChunUtil.VERSION_MAJOR + 1) + ".0.0)",
+        dependencies = "required-after:ichunutil@[" + iChunUtil.VERSION_MAJOR +".0.1," + (iChunUtil.VERSION_MAJOR + 1) + ".0.0)",
+        acceptedMinecraftVersions = iChunUtil.MC_VERSION_RANGE,
         clientSideOnly = true
 )
 public class BackTools
 {
     public static final String MOD_NAME = "BackTools";
     public static final String MOD_ID = "backtools";
-    public static final String VERSION = iChunUtil.VERSION_MAJOR + ".2.0";
+    public static final String VERSION = iChunUtil.VERSION_MAJOR + ".0.0";
 
     public static final Logger logger = Logger.createLogger(BackTools.MOD_NAME);
 
@@ -72,7 +73,7 @@ public class BackTools
             {
                 if(!orientationMap.containsKey(message.getItemStackValue().getItem().getClass()))
                 {
-                    orientationMap.put(message.getItemStackValue().getItem().getClass(), message.getItemStackValue().stackSize);
+                    orientationMap.put(message.getItemStackValue().getItem().getClass(), message.getItemStackValue().getCount());
                     logger.warn("Registered " + message.getItemStackValue().getItem().getClass().getName() + " to backtools");
                 }
             }
