@@ -45,7 +45,7 @@ public class EventHandlerClient
             ItemStack heldItem = player.getHeldItem(EnumHand.MAIN_HAND);
             if(heldItem != currentTool.get(player.getName()) && (heldItem.isEmpty() || (Block.getBlockFromItem(heldItem.getItem()) == Blocks.AIR)))
             {
-                if(currentTool.get(player.getName()) != null && (currentTool.get(player.getName()).getItem().isFull3D() || currentTool.get(player.getName()).getItem() instanceof ItemBow) && !BackTools.blacklist.contains(currentTool.get(player.getName()).getItem()))
+                if(currentTool.get(player.getName()) != null && (currentTool.get(player.getName()).getItem().isFull3D() || currentTool.get(player.getName()).getItem() instanceof ItemBow) && !BackTools.blacklist.contains(currentTool.get(player.getName()).getItem()) && !BackTools.isBlacklistedInConfig(currentTool.get(player.getName()).getItem()))
                 {
                     ItemStack is = currentTool.get(player.getName()).copy();
                     IBakedModel model = Minecraft.getMinecraft().getRenderItem().getItemModelMesher().getItemModel(is);
