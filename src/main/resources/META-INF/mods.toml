@@ -1,0 +1,26 @@
+modLoader="javafml"
+loaderVersion="[28,)" #forge version dep
+issueTrackerURL="https://github.com/iChun/BackTools/issues"
+
+[[mods]]
+    modId="backtools"
+    version="${file.jarVersion}" #mandatory
+    displayName="Back Tools"
+    displayURL="https://ichun.me/mods/back-tools/"
+    authors="iChun"
+    description='''
+    Shows the last used tool on the player's back. Purely aesthetic.
+    '''
+
+[[dependencies.backtools]]
+    modId="forge"
+    mandatory=true
+    versionRange="[28,)"
+    ordering="NONE"
+    side="BOTH"
+[[dependencies.backtools]]
+    modId="minecraft"
+    mandatory=true
+    versionRange="[1.14.4]"
+    ordering="NONE"
+    side="BOTH"
