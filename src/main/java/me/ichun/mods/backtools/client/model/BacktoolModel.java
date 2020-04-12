@@ -1,11 +1,15 @@
 package me.ichun.mods.backtools.client.model;
 
-import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.IVertexBuilder;
 import me.ichun.mods.backtools.client.core.EventHandler;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.client.renderer.Vector3f;
 import net.minecraft.client.renderer.entity.model.BipedModel;
-import net.minecraft.client.renderer.entity.model.RendererModel;
 import net.minecraft.client.renderer.model.ItemCameraTransforms;
+import net.minecraft.client.renderer.model.ModelRenderer;
+import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ShieldItem;
@@ -19,6 +23,7 @@ public class BacktoolModel extends BipedModel<LivingEntity>
     public int ticks;
     public float partialTick;
     public float offset;
+    public IRenderTypeBuffer buffer;
 
     public BacktoolModel(float scale)
     {
@@ -29,19 +34,19 @@ public class BacktoolModel extends BipedModel<LivingEntity>
         this.rightArmPose = BipedModel.ArmPose.EMPTY;
         this.textureWidth = 64;
         this.textureHeight = 32;
-        this.bipedHead = new RendererModel(this);
-        this.bipedHeadwear = new RendererModel(this);
+        this.bipedHead = new ModelRenderer(this);
+        this.bipedHeadwear = new ModelRenderer(this);
 
         this.bipedBody = new BackToolRendererModel(this);
         this.bipedBody.setRotationPoint(0.0F, 0.0F + offset, 0.0F);
 
-        this.bipedRightArm = new RendererModel(this);
-        this.bipedLeftArm = new RendererModel(this);
-        this.bipedRightLeg = new RendererModel(this);
-        this.bipedLeftLeg = new RendererModel(this);
+        this.bipedRightArm = new ModelRenderer(this);
+        this.bipedLeftArm = new ModelRenderer(this);
+        this.bipedRightLeg = new ModelRenderer(this);
+        this.bipedLeftLeg = new ModelRenderer(this);
     }
 
-    public void setItemRenders(ItemStack main, ItemStack off, HandSide side, int ticks, float partialTick, float offset)
+    public void setItemRenders(ItemStack main, ItemStack off, HandSide side, int ticks, float partialTick, float offset, IRenderTypeBuffer bufferIn)
     {
         mainStack = main;
         offStack = off;
@@ -49,26 +54,24 @@ public class BacktoolModel extends BipedModel<LivingEntity>
         this.ticks = ticks;
         this.partialTick = partialTick;
         this.offset = offset;
+        this.buffer = bufferIn;
     }
 
     @Override
-    public void render(LivingEntity living, float f, float f1, float f2, float f3, float f4, float f5) {
-        this.setRotationAngles(living, f, f1, f2, f3, f4, f5);
-        GlStateManager.pushMatrix();
+    public void render(MatrixStack matrixStackIn, IVertexBuilder bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
         if (this.isChild) {
-            GlStateManager.scalef(0.5F, 0.5F, 0.5F);
-            GlStateManager.translatef(0.0F, 24.0F * f5, 0.0F);
-            this.bipedBody.render(f5);
+            matrixStackIn.push();
+            float f1 = 1.0F / 2F;//this.field_228225_h_;
+            matrixStackIn.scale(f1, f1, f1);
+            matrixStackIn.translate(0.0D, (double)(24F /*this.field_228226_i_*/ / 16.0F), 0.0D);
+            this.bipedBody.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+            matrixStackIn.pop();
         } else {
-            if (living.shouldRenderSneaking()) {
-                GlStateManager.translatef(0.0F, 0.2F, 0.0F);
-            }
-            this.bipedBody.render(f5);
+            this.bipedBody.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
         }
-        GlStateManager.popMatrix();
     }
 
-    public static class BackToolRendererModel extends RendererModel
+    public static class BackToolRendererModel extends ModelRenderer
     {
         private final BacktoolModel parent;
         public BackToolRendererModel(BacktoolModel parent)
@@ -78,106 +81,96 @@ public class BacktoolModel extends BipedModel<LivingEntity>
         }
 
         @Override
-        public void render(float scale)
-        {
-            if(parent.mainStack.isEmpty() && parent.offStack.isEmpty())
-            {
-                return;
-            }
-
-            if (!this.isHidden) {
-                if (this.showModel) {
-
-                    GlStateManager.pushMatrix();
-                    GlStateManager.translatef(this.offsetX, this.offsetY, this.offsetZ);
-                    if (this.rotateAngleX == 0.0F && this.rotateAngleY == 0.0F && this.rotateAngleZ == 0.0F) {
-                        if (this.rotationPointX == 0.0F && this.rotationPointY == 0.0F && this.rotationPointZ == 0.0F)
-                        {
-                            renderItem();
-                        } else
-                        {
-                            GlStateManager.pushMatrix();
-                            GlStateManager.translatef(this.rotationPointX * scale, this.rotationPointY * scale, this.rotationPointZ * scale);
-                            renderItem();
-
-                            GlStateManager.popMatrix();
-                        }
-                    } else {
-                        GlStateManager.pushMatrix();
-                        GlStateManager.translatef(this.rotationPointX * scale, this.rotationPointY * scale, this.rotationPointZ * scale);
-                        if (this.rotateAngleZ != 0.0F) {
-                            GlStateManager.rotatef(this.rotateAngleZ * 57.295776F, 0.0F, 0.0F, 1.0F);
-                        }
-
-                        if (this.rotateAngleY != 0.0F) {
-                            GlStateManager.rotatef(this.rotateAngleY * 57.295776F, 0.0F, 1.0F, 0.0F);
-                        }
-
-                        if (this.rotateAngleX != 0.0F) {
-                            GlStateManager.rotatef(this.rotateAngleX * 57.295776F, 1.0F, 0.0F, 0.0F);
-                        }
-
-                        renderItem();
-
-                        GlStateManager.popMatrix();
-                    }
-
-                    GlStateManager.popMatrix();
-                }
+        public void render(MatrixStack matrixStackIn, IVertexBuilder bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
+            if (this.showModel) {
+                matrixStackIn.push();
+                this.translateRotate(matrixStackIn);
+                this.renderItem(matrixStackIn, packedLightIn);
+                matrixStackIn.pop();
             }
         }
 
-        public void renderItem()
+        public void renderItem(MatrixStack matrixStackIn, int packedLightIn)
         {
             //parent has reference
-            GlStateManager.translatef(0F, 4F/16F, 2.501F/16F + (parent.offset / 16F));
+            matrixStackIn.translate(0F, 4F/16F, 1.91F/16F + (parent.offset / 16F));
             if(!parent.mainStack.isEmpty())
             {
-                GlStateManager.pushMatrix();
-                GlStateManager.translatef(0F, 0F, 0.025F);
+                matrixStackIn.push();
+                matrixStackIn.translate(0F, 0F, 0.025F);
                 boolean isShield = parent.mainStack.getItem() instanceof ShieldItem;
+                if(parent.mainSide == HandSide.RIGHT)
+                {
+                    matrixStackIn.scale(-1F, 1F, -1F);
+                }
                 if(isShield)
                 {
-                    GlStateManager.translatef(8F/16F, 11F/16F, 6F/16F);
-                }
-                else if(parent.mainSide == HandSide.LEFT)
-                {
-                    GlStateManager.rotatef(180F, 0F, 1F, 0F);
+                    if(parent.mainSide == HandSide.LEFT)
+                    {
+                        matrixStackIn.rotate(Vector3f.YP.rotationDegrees(180F));
+                    }
+                    float scale = 1.5F;
+                    matrixStackIn.scale(scale, scale, scale);
+                    if(parent.mainSide == HandSide.LEFT)
+                    {
+                        matrixStackIn.translate(-2.5F/16F, 2F/16F, 1.25F/16F);
+                        matrixStackIn.rotate(Vector3f.ZP.rotationDegrees(-25F));
+                    }
+                    else
+                    {
+                        matrixStackIn.translate(-1F/16F, 0.25F/16F, 1.25F/16F);
+                        matrixStackIn.rotate(Vector3f.ZP.rotationDegrees(25F));
+                    }
                 }
 
                 if(!isShield)
                 {
                     int i = EventHandler.getToolOrientation(parent.mainStack.getItem());
-                    GlStateManager.rotatef(i, 0F, 0F, 1F);
+                    matrixStackIn.rotate(Vector3f.ZP.rotationDegrees(-i));
                     if(parent.ticks > 0)
                     {
-                        GlStateManager.rotatef((parent.ticks + parent.partialTick) * 40F, 0F, 0F, 1F);
+                        matrixStackIn.rotate(Vector3f.ZP.rotationDegrees((parent.ticks + parent.partialTick) * 40F));
                     }
                 }
-                Minecraft.getInstance().getItemRenderer().renderItem(parent.mainStack, ItemCameraTransforms.TransformType.NONE);
-                GlStateManager.popMatrix();
+                Minecraft.getInstance().getItemRenderer().renderItem(parent.mainStack, ItemCameraTransforms.TransformType.FIXED, packedLightIn, OverlayTexture.NO_OVERLAY, matrixStackIn, parent.buffer);
+                matrixStackIn.pop();
             }
             if(!parent.offStack.isEmpty())
             {
                 boolean isShield = parent.offStack.getItem() instanceof ShieldItem;
+                if(parent.mainSide == HandSide.LEFT)
+                {
+                    matrixStackIn.scale(-1F, 1F, -1F);
+                }
                 if(isShield)
                 {
-                    GlStateManager.translatef(8F/16F, 11F/16F, 6F/16F);
-                }
-                else if(parent.mainSide == HandSide.RIGHT)
-                {
-                    GlStateManager.rotatef(180F, 0F, 1F, 0F);
+                    if(parent.mainSide == HandSide.RIGHT)
+                    {
+                        matrixStackIn.rotate(Vector3f.YP.rotationDegrees(180F));
+                    }
+                    float scale = 1.5F;
+                    matrixStackIn.scale(scale, scale, scale);
+                    if(parent.mainSide == HandSide.RIGHT)
+                    {
+                        matrixStackIn.translate(-2.5F/16F, 2F/16F, 1.25F/16F);
+                        matrixStackIn.rotate(Vector3f.ZP.rotationDegrees(-25F));
+                    }
+                    else
+                    {
+                        matrixStackIn.translate(-1F/16F, 0.25F/16F, 1.25F/16F);
+                        matrixStackIn.rotate(Vector3f.ZP.rotationDegrees(25F));
+                    }
                 }
                 if(!isShield)
                 {
                     int i = EventHandler.getToolOrientation(parent.offStack.getItem());
-                    GlStateManager.rotatef(i, 0F, 0F, 1F);
+                    matrixStackIn.rotate(Vector3f.ZP.rotationDegrees(-i));
                     if(parent.ticks > 0)
                     {
-                        GlStateManager.rotatef((parent.ticks + parent.partialTick) * 40F, 0F, 0F, 1F);
+                        matrixStackIn.rotate(Vector3f.ZP.rotationDegrees((parent.ticks + parent.partialTick) * 40F));
                     }
                 }
-                Minecraft.getInstance().getItemRenderer().renderItem(parent.offStack, ItemCameraTransforms.TransformType.NONE);
+                Minecraft.getInstance().getItemRenderer().renderItem(parent.offStack, ItemCameraTransforms.TransformType.FIXED, packedLightIn, OverlayTexture.NO_OVERLAY, matrixStackIn, parent.buffer);
             }
         }
     }

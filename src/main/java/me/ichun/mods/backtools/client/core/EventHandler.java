@@ -7,9 +7,9 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.player.AbstractClientPlayerEntity;
 import net.minecraft.client.gui.screen.MainMenuScreen;
 import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.item.ItemEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.*;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.ResourceLocation;
@@ -104,13 +104,13 @@ public class EventHandler
     }
 
     @SubscribeEvent
-    public static void onClientTick(TickEvent.ClientTickEvent event)//remove this
+    public static void onClientTick(TickEvent.ClientTickEvent event)//TODO remove this
     {
-        if(event.phase == TickEvent.Phase.END && Minecraft.getInstance().currentScreen instanceof MainMenuScreen && Screen.hasShiftDown())
-        {
-            System.out.println("OPENING THE GUI");
-            Minecraft.getInstance().displayGuiScreen(new WorkspaceTest(new StringTextComponent("aklsdfj")));
-        }
+                if(event.phase == TickEvent.Phase.END && Minecraft.getInstance().currentScreen instanceof MainMenuScreen && Screen.hasShiftDown())
+                {
+                    System.out.println("OPENING THE GUI");
+                    Minecraft.getInstance().displayGuiScreen(new WorkspaceTest(new StringTextComponent("aklsdfj")));
+                }
     }
 
     @SubscribeEvent
@@ -137,7 +137,7 @@ public class EventHandler
         if(event.getWorld().isRemote && event.getEntity() instanceof ItemEntity)
         {
             ItemEntity item = (ItemEntity)event.getEntity();
-            List<Entity> ents = event.getWorld().getEntitiesWithinAABB(EntityType.PLAYER, item.getBoundingBox().expand(1D, 1D, 1D), k -> true);
+            List<PlayerEntity> ents = event.getWorld().getEntitiesWithinAABB(EntityType.PLAYER, item.getBoundingBox().expand(1D, 1D, 1D), k -> true);
             ents.forEach((e) -> {
                 if(e instanceof AbstractClientPlayerEntity)
                 {

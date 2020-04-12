@@ -3,6 +3,7 @@ package me.ichun.mods.backtools.common.core;
 import me.ichun.mods.backtools.client.core.EventHandler;
 import me.ichun.mods.backtools.common.BackTools;
 import me.ichun.mods.ichunutil.common.config.ConfigBase;
+import me.ichun.mods.ichunutil.common.config.annotations.CategoryDivider;
 import me.ichun.mods.ichunutil.common.config.annotations.Prop;
 import net.minecraft.client.Minecraft;
 import net.minecraft.item.*;
@@ -14,9 +15,10 @@ import java.util.List;
 
 public class Config extends ConfigBase
 {
+    @CategoryDivider(name = "clientOnly")
     @Prop(comment = "Disabled tools, by their resource name. Eg: minecraft:diamond_hoe")
     public List<String> disabledTools = new ArrayList() {{
-        add("minecraft:shield");
+        //add("minecraft:shield");
     }};
     @Prop(comment = "Tool orientation, by class file and degrees. Separate with \":\" . See defaults for examples.")
     public List<String> toolOrientation = new ArrayList() {{
@@ -57,8 +59,6 @@ public class Config extends ConfigBase
     @Override
     public void onConfigLoaded()
     {
-        Minecraft.getInstance().execute(() -> {
-            EventHandler.setupConfig();
-        });
+        Minecraft.getInstance().execute(EventHandler::setupConfig);
     }
 }
