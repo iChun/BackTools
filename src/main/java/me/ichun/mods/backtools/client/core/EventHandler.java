@@ -2,18 +2,14 @@ package me.ichun.mods.backtools.client.core;
 
 import me.ichun.mods.backtools.client.render.BackToolLayer;
 import me.ichun.mods.backtools.common.BackTools;
-import me.ichun.mods.ichunutil.client.gui.bns.impl.WorkspaceTest;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.player.AbstractClientPlayerEntity;
-import net.minecraft.client.gui.screen.MainMenuScreen;
-import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.*;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.StringTextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.ClientPlayerNetworkEvent;
@@ -101,16 +97,6 @@ public class EventHandler
             return 0;
         }
         return toolOrientations.computeIfAbsent(clz, k -> getToolOrientation(clz.getSuperclass()));
-    }
-
-    @SubscribeEvent
-    public static void onClientTick(TickEvent.ClientTickEvent event)//TODO remove this
-    {
-                if(event.phase == TickEvent.Phase.END && Minecraft.getInstance().currentScreen instanceof MainMenuScreen && Screen.hasShiftDown())
-                {
-                    System.out.println("OPENING THE GUI");
-                    Minecraft.getInstance().displayGuiScreen(new WorkspaceTest(new StringTextComponent("aklsdfj")));
-                }
     }
 
     @SubscribeEvent
