@@ -16,11 +16,11 @@ import java.util.List;
 public class Config extends ConfigBase
 {
     @CategoryDivider(name = "clientOnly")
-    @Prop(comment = "Disabled tools, by their resource name. Eg: minecraft:diamond_hoe")
+    @Prop
     public List<String> disabledTools = new ArrayList() {{
         //add("minecraft:shield");
     }};
-    @Prop(comment = "Tool orientation, by class file and degrees. Separate with \":\" . See defaults for examples.")
+    @Prop
     public List<String> toolOrientation = new ArrayList() {{
         add(ToolItem.class.getName() + ":180");
         add(HoeItem.class.getName() + ":180");
@@ -28,7 +28,7 @@ public class Config extends ConfigBase
         add(TridentItem.class.getName() + ":180");
         add(ShootableItem.class.getName() + ":90");
     }};
-    @Prop(comment = "Some nbt tags will cause back tools to appear improperly. Use this setting to cleanse the item tags.")
+    @Prop
     public List<String> nbtCleaner = new ArrayList() {{
         add("Damage");
         add("Charged");
