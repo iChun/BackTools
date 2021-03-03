@@ -17,6 +17,9 @@ public class Config extends ConfigBase
 {
     @CategoryDivider(name = "clientOnly")
     @Prop
+    public List<String> enabledTools = new ArrayList<>();
+
+    @Prop
     public List<String> disabledTools = new ArrayList() {{
         //add("minecraft:shield");
     }};

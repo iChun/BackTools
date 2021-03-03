@@ -31,6 +31,7 @@ public class EventHandler
 {
     public static WeakHashMap<AbstractClientPlayerEntity, HeldInfo> heldTools = new WeakHashMap<>();
 
+    public static HashSet<ResourceLocation> enabledTools = new HashSet<>();
     public static HashSet<ResourceLocation> disabledTools = new HashSet<>();
     public static HashMap<Class<? extends Item>, Integer> toolOrientations = new HashMap<>();
 
@@ -43,9 +44,17 @@ public class EventHandler
 
     public static void setupConfig()
     {
-        disabledTools.clear();
-        BackTools.config.disabledTools.forEach(s -> disabledTools.add(new ResourceLocation(s)));
-        disabledTools.addAll(BackTools.imcDisabledTools);
+        //whitelist only mods
+        enabledTools.clear();
+        BackTools.config.enabledTools.forEach(s -> enabledTools.add(new ResourceLocation(s)));
+
+        //if nothing in whitelist, check our blacklist
+        if(enabledTools.isEmpty())
+        {
+            disabledTools.clear();
+            BackTools.config.disabledTools.forEach(s -> disabledTools.add(new ResourceLocation(s)));
+            disabledTools.addAll(BackTools.imcDisabledTools);
+        }
 
         toolOrientations.clear();
         for(String s : BackTools.config.toolOrientation)
@@ -86,8 +95,7 @@ public class EventHandler
 
     public static Integer getToolOrientation(Item item)
     {
-        Class clz = item.getClass();
-        return toolOrientations.computeIfAbsent(clz, k -> getToolOrientation(clz));
+        return getToolOrientation(item.getClass());
     }
 
     public static Integer getToolOrientation(Class clz)
@@ -96,7 +104,11 @@ public class EventHandler
         {
             return 0;
         }
-        return toolOrientations.computeIfAbsent(clz, k -> getToolOrientation(clz.getSuperclass()));
+        if(!toolOrientations.containsKey(clz))
+        {
+            toolOrientations.put(clz, getToolOrientation(clz.getSuperclass()));
+        }
+        return toolOrientations.get(clz);
     }
 
     @SubscribeEvent
@@ -155,6 +167,11 @@ public class EventHandler
 
     public static boolean isItemTool(Item item)
     {
+        if(!enabledTools.isEmpty())
+        {
+            return enabledTools.contains(item.getRegistryName());
+        }
+
         if(disabledTools.contains(item.getRegistryName()))
         {
             return false;

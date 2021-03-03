@@ -1,4 +1,6 @@
 {
+  "config.backtools.prop.enabledTools.name": "Enabled Tools",
+  "config.backtools.prop.enabledTools.desc": "Enabled tools, by their resource name. Eg: minecraft:diamond_hoe. Putting any entry in this converts BackTools to a whitelist-only mod. Disabled Tools will be ignored.",
   "config.backtools.prop.disabledTools.name": "Disabled Tools",
   "config.backtools.prop.disabledTools.desc": "Disabled tools, by their resource name. Eg: minecraft:diamond_hoe",
   "config.backtools.prop.toolOrientation.name": "Tool Orientation",
