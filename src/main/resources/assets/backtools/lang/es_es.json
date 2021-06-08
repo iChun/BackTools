@@ -1,0 +1,10 @@
+{
+  "config.backtools.prop.enabledTools.name": "Herramientas activadas",
+  "config.backtools.prop.enabledTools.desc": "Activa herramientas por sus nombres de recurso. Ejemplo: minecraft:diamond_hoe. Introducir cualquier entrada aquí convierte a BackTools en un mod solo de lista blanca. Las herramientas desactivadas se ignorarán.",
+  "config.backtools.prop.disabledTools.name": "Herramientas desactivadas",
+  "config.backtools.prop.disabledTools.desc": "Desactiva herramientas por sus nombres de recurso. Ejemplo: minecraft:diamond_hoe",
+  "config.backtools.prop.toolOrientation.name": "Orientación de herramienta",
+  "config.backtools.prop.toolOrientation.desc": "Orienta herramientas por clase de objeto y grados. Separe los valores con \":\" . Vea los valores por defecto como ejemplos.",
+  "config.backtools.prop.nbtCleaner.name": "Limpiador de NBT",
+  "config.backtools.prop.nbtCleaner.desc": "Algunas etiquetas NBT harán que las herramientas en la espalda aparezcan incorrectamente. Utilice esta configuración para limpiar las etiquetas de los objetos."
+}
