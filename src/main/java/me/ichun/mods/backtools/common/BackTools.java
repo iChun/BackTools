@@ -24,7 +24,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 
 @Mod(BackTools.MOD_ID)
-public class BackTools //TODO remember to depend on iChunUtil, scale config, whiteblacklist config
+public class BackTools //TODO scale config, whiteblacklist config
 {
     public static final String MOD_ID = "backtools";
     public static final String MOD_NAME = "Back Tools";
@@ -38,13 +38,13 @@ public class BackTools //TODO remember to depend on iChunUtil, scale config, whi
 
     public BackTools()
     {
-        DistExecutor.runWhenOn(Dist.CLIENT, () -> () -> {
+        DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> {
             setupConfig();
             FMLJavaModLoadingContext.get().getModEventBus().addListener(this::processIMC);
             FMLJavaModLoadingContext.get().getModEventBus().addListener(this::finishLoading);
             ModLoadingContext.get().registerExtensionPoint(ExtensionPoint.CONFIGGUIFACTORY, () -> me.ichun.mods.ichunutil.client.core.EventHandlerClient::getConfigGui);
         });
-        DistExecutor.runWhenOn(Dist.DEDICATED_SERVER, () -> () -> LOGGER.log(Level.ERROR, "You are loading " + MOD_NAME + " on a server. " + MOD_NAME + " is a client only mod!"));
+        DistExecutor.unsafeRunWhenOn(Dist.DEDICATED_SERVER, () -> () -> LOGGER.log(Level.ERROR, "You are loading " + MOD_NAME + " on a server. " + MOD_NAME + " is a client only mod!"));
 
         //Make sure the mod being absent on the other network side does not cause the client to display the server as incompatible
         ModLoadingContext.get().registerExtensionPoint(ExtensionPoint.DISPLAYTEST, () -> Pair.of(() -> FMLNetworkConstants.IGNORESERVERONLY, (a, b) -> true));

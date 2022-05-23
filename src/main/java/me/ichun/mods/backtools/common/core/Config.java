@@ -7,6 +7,7 @@ import me.ichun.mods.ichunutil.common.config.annotations.CategoryDivider;
 import me.ichun.mods.ichunutil.common.config.annotations.Prop;
 import net.minecraft.client.Minecraft;
 import net.minecraft.item.*;
+import net.minecraft.util.Util;
 import net.minecraftforge.fml.config.ModConfig;
 
 import javax.annotation.Nonnull;
@@ -16,27 +17,35 @@ import java.util.List;
 public class Config extends ConfigBase
 {
     @CategoryDivider(name = "clientOnly")
-    @Prop
-    public List<String> enabledTools = new ArrayList<>();
+    public List<String> enabledToolsID = new ArrayList<>();
 
-    @Prop
-    public List<String> disabledTools = new ArrayList() {{
-        //add("minecraft:shield");
-    }};
-    @Prop
-    public List<String> toolOrientation = new ArrayList() {{
-        add(ToolItem.class.getName() + ":180");
-        add(HoeItem.class.getName() + ":180");
-        add(FishingRodItem.class.getName() + ":180");
-        add(TridentItem.class.getName() + ":180");
-        add(ShootableItem.class.getName() + ":90");
-    }};
-    @Prop
-    public List<String> nbtCleaner = new ArrayList() {{
-        add("Damage");
-        add("Charged");
-        add("ChargedProjectiles");
-    }};
+    public List<String> enabledToolsClass = Util.make(new ArrayList<>(), list -> {
+        list.add(TieredItem.class.getName());
+        list.add(ShootableItem.class.getName());
+        list.add(ShearsItem.class.getName());
+        list.add(FishingRodItem.class.getName());
+        list.add(TridentItem.class.getName());
+    });
+
+    public List<String> disabledToolsID = Util.make(new ArrayList<>(), list -> {
+        list.add("minecraft:shield");
+    });
+
+    public List<String> disabledToolsClass = new ArrayList<>();
+
+    public List<String> toolOrientation = Util.make(new ArrayList<>(), list -> {
+        list.add(ToolItem.class.getName() + ":180");
+        list.add(HoeItem.class.getName() + ":180");
+        list.add(FishingRodItem.class.getName() + ":180");
+        list.add(TridentItem.class.getName() + ":180");
+        list.add(ShootableItem.class.getName() + ":90");
+    });
+
+    public List<String> nbtCleaner = Util.make(new ArrayList<>(), list -> {
+        list.add("Damage");
+        list.add("Charged");
+        list.add("ChargedProjectiles");
+    });
 
     @Nonnull
     @Override

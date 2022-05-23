@@ -24,6 +24,8 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.WeakHashMap;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @OnlyIn(Dist.CLIENT)
 @Mod.EventBusSubscriber(modid = BackTools.MOD_ID, value = Dist.CLIENT)
@@ -31,8 +33,10 @@ public class EventHandler
 {
     public static WeakHashMap<AbstractClientPlayerEntity, HeldInfo> heldTools = new WeakHashMap<>();
 
-    public static HashSet<ResourceLocation> enabledTools = new HashSet<>();
-    public static HashSet<ResourceLocation> disabledTools = new HashSet<>();
+    public static HashSet<Pattern> enabledToolsID = new HashSet<>();
+    public static HashSet<Class<? extends Item>> enabledToolsClass = new HashSet<>();
+    public static HashSet<Pattern> disabledToolsID = new HashSet<>();
+    public static HashSet<Class<? extends Item>> disabledToolsClass = new HashSet<>();
     public static HashMap<Class<? extends Item>, Integer> toolOrientations = new HashMap<>();
 
     public static void addLayers()
@@ -44,17 +48,51 @@ public class EventHandler
 
     public static void setupConfig()
     {
-        //whitelist only mods
-        enabledTools.clear();
-        BackTools.config.enabledTools.forEach(s -> enabledTools.add(new ResourceLocation(s)));
+        //Check our list for all the enabled tools by ID and class
+        enabledToolsID.clear();
+        enabledToolsClass.clear();
+        BackTools.config.enabledToolsID.forEach(s -> enabledToolsID.add(Pattern.compile(s)));
+        BackTools.config.enabledToolsClass.forEach(s -> {
+            try
+            {
+                Class clz = Class.forName(s);
+                if(Item.class.isAssignableFrom(clz))
+                {
+                    enabledToolsClass.add(clz);
+                }
+                else
+                {
+                    BackTools.LOGGER.warn("Class {} does not extend Item class", clz);
+                }
+            }
+            catch(ClassNotFoundException e)
+            {
+                BackTools.LOGGER.warn("Cannot find class {}", s);
+            }
+        });
 
-        //if nothing in whitelist, check our blacklist
-        if(enabledTools.isEmpty())
-        {
-            disabledTools.clear();
-            BackTools.config.disabledTools.forEach(s -> disabledTools.add(new ResourceLocation(s)));
-            disabledTools.addAll(BackTools.imcDisabledTools);
-        }
+        //Now checked the explicitly disabled ones
+        disabledToolsID.clear();
+        disabledToolsClass.clear();
+        BackTools.config.disabledToolsID.forEach(s -> disabledToolsID.add(Pattern.compile(s)));
+        BackTools.config.disabledToolsClass.forEach(s -> {
+            try
+            {
+                Class clz = Class.forName(s);
+                if(Item.class.isAssignableFrom(clz))
+                {
+                    disabledToolsClass.add(clz);
+                }
+                else
+                {
+                    BackTools.LOGGER.warn("Class {} does not extend Item class", clz);
+                }
+            }
+            catch(ClassNotFoundException e)
+            {
+                BackTools.LOGGER.warn("Cannot find class {}", s);
+            }
+        });
 
         toolOrientations.clear();
         for(String s : BackTools.config.toolOrientation)
@@ -167,21 +205,42 @@ public class EventHandler
 
     public static boolean isItemTool(Item item)
     {
-        if(!enabledTools.isEmpty())
+        //Check disabled tools first
+        for(Pattern p : disabledToolsID)
         {
-            return enabledTools.contains(item.getRegistryName());
+            Matcher m = p.matcher(item.getRegistryName().toString());
+            if(m.matches())
+            {
+                return false;
+            }
         }
 
-        if(disabledTools.contains(item.getRegistryName()))
+        for(Class<? extends Item> clz : disabledToolsClass)
         {
-            return false;
+            if(clz.isInstance(item))
+            {
+                return false;
+            }
         }
-        return item instanceof TieredItem ||
-                item instanceof ShootableItem ||
-                item instanceof ShearsItem ||
-                item instanceof FishingRodItem ||
-                item instanceof ShieldItem ||
-                item instanceof TridentItem;
+
+        //Now check if the tool is enabled
+        for(Pattern p : enabledToolsID)
+        {
+            Matcher m = p.matcher(item.getRegistryName().toString());
+            if(m.matches())
+            {
+                return true;
+            }
+        }
+
+        for(Class<? extends Item> clz : enabledToolsClass)
+        {
+            if(clz.isInstance(item))
+            {
+                return true;
+            }
+        }
+        return false;
     }
 
     public static boolean areItemStacksEqualToolsIgnoreDamage(@Nonnull ItemStack stackA, @Nonnull ItemStack stackB)

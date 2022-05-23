@@ -13,7 +13,7 @@ apply plugin: 'net.minecraftforge.gradle'
 apply plugin: 'eclipse'
 apply plugin: 'maven-publish'
 
-version = '10.1.0'
+version = '10.2.0'
 group = 'backtools'
 archivesBaseName = 'BackTools-1.16.5'
 
