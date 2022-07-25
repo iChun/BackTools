@@ -18,4 +18,10 @@ issueTrackerURL="https://github.com/iChun/BackTools/issues"
     mandatory=true
     versionRange="[10.0.0,11)"
     ordering="NONE"
-    side="BOTH"
+    side="CLIENT"
+[[dependencies.backtools]]
+    modId="minecraft"
+    mandatory=true
+    versionRange="[1.16.5)"
+    ordering="NONE"
+    side="CLIENT"
