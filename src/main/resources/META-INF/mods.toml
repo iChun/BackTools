@@ -1,5 +1,6 @@
 modLoader="javafml"
 loaderVersion="[28,)" #forge version dep
+license="GNU Lesser General Public License v3.0"
 issueTrackerURL="https://github.com/iChun/BackTools/issues"
 
 [[mods]]
@@ -17,10 +18,10 @@ issueTrackerURL="https://github.com/iChun/BackTools/issues"
     mandatory=true
     versionRange="[28,)"
     ordering="NONE"
-    side="BOTH"
+    side="CLIENT"
 [[dependencies.backtools]]
     modId="minecraft"
     mandatory=true
     versionRange="[1.14.4]"
     ordering="NONE"
-    side="BOTH"
+    side="CLIENT"
