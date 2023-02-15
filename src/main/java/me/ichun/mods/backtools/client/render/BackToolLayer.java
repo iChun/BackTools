@@ -30,12 +30,6 @@ public class BackToolLayer extends LayerRenderer<AbstractClientPlayerEntity, Pla
     @Override
     public void render(MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int packedLightIn, AbstractClientPlayerEntity player, float limbSwing, float limbSwingAmount, float partialTick, float ageInTicks, float netHeadYaw, float headPitch)
     {
-        //TODO add support for Morph
-        //        if(iChunUtil.hasMorphMod() && MorphApi.getApiImpl().hasMorph(player.getName(), Side.CLIENT) && (MorphApi.getApiImpl().morphProgress(player.getName(), Side.CLIENT) < 1.0F || !(MorphApi.getApiImpl().getMorphEntity(player.getEntityWorld(), player.getName(), Side.CLIENT) instanceof EntityPlayer)))
-        //        {
-        //            return;
-        //        }
-
         if(!(player.isWearing(PlayerModelPart.CAPE) && player.getLocationCape() != null) && !player.isInvisible() && !player.isSleeping() && EventHandler.heldTools.containsKey(player))
         {
             EventHandler.HeldInfo info = EventHandler.heldTools.get(player);
